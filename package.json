@@ -1,0 +1,29 @@
+{
+  "name": "tor-ai-extension",
+  "version": "1.0.0",
+  "description": "Extensão para Tor Browser com IA local (Ollama/LMStudio) — privacidade total.",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build:watch": "node scripts/build.js --watch",
+    "test": "jest --config jest.config.ts",
+    "test:watch": "jest --watch --config jest.config.ts",
+    "test:coverage": "jest --config jest.config.ts --coverage",
+    "package": "node scripts/package.js",
+    "clean": "rimraf dist/",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "esbuild": "^0.21.5",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "rimraf": "^5.0.7",
+    "ts-jest": "^29.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

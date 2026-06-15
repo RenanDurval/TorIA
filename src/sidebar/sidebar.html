@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TorAI — Painel</title>
+  <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+  <div class="sidebar-container">
+    <!-- Header -->
+    <header class="sidebar-header">
+      <div class="header-brand">
+        <span class="header-logo">🧠</span>
+        <h1 class="header-title">TorAI</h1>
+      </div>
+      <div class="header-status" id="header-status" title="Status da conexão">
+        <span class="status-dot" id="sidebar-status-dot"></span>
+        <span class="status-label" id="sidebar-status-label">Offline</span>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav" role="tablist" aria-label="Funcionalidades">
+      <button class="tab-btn active" id="tab-summary" role="tab" 
+              aria-selected="true" aria-controls="panel-summary" tabindex="0">
+        <span class="tab-icon">📝</span>
+        <span class="tab-label">Resumo</span>
+      </button>
+      <button class="tab-btn" id="tab-translation" role="tab"
+              aria-selected="false" aria-controls="panel-translation" tabindex="-1">
+        <span class="tab-icon">🌐</span>
+        <span class="tab-label">Tradução</span>
+      </button>
+      <button class="tab-btn" id="tab-tips" role="tab"
+              aria-selected="false" aria-controls="panel-tips" tabindex="-1">
+        <span class="tab-icon">💡</span>
+        <span class="tab-label">Dicas</span>
+      </button>
+      <button class="tab-btn" id="tab-entities" role="tab"
+              aria-selected="false" aria-controls="panel-entities" tabindex="-1">
+        <span class="tab-icon">🏷️</span>
+        <span class="tab-label">Entidades</span>
+      </button>
+      <button class="tab-btn" id="tab-snippet" role="tab"
+              aria-selected="false" aria-controls="panel-snippet" tabindex="-1">
+        <span class="tab-icon">✂️</span>
+        <span class="tab-label">Trecho</span>
+      </button>
+      <button class="tab-btn" id="tab-chat" role="tab"
+              aria-selected="false" aria-controls="panel-chat" tabindex="-1">
+        <span class="tab-icon">💬</span>
+        <span class="tab-label">Chat</span>
+      </button>
+    </nav>
+
+    <!-- Tab Panels -->
+    <div class="panels-container">
+
+      <!-- ═══ Summary Panel ═══ -->
+      <div class="panel active" id="panel-summary" role="tabpanel" aria-labelledby="tab-summary">
+        <div class="panel-controls">
+          <div class="toggle-group" role="radiogroup" aria-label="Tipo de resumo">
+            <button class="toggle-btn active" id="btn-summary-short" role="radio" 
+                    aria-checked="true" tabindex="0">Curto (2-3 frases)</button>
+            <button class="toggle-btn" id="btn-summary-detailed" role="radio"
+                    aria-checked="false" tabindex="-1">Detalhado (5-8 frases)</button>
+          </div>
+          <button class="btn btn-action" id="btn-generate-summary" tabindex="0">
+            <span class="btn-icon">▶</span>
+            Gerar resumo
+          </button>
+          <button class="btn btn-secondary" id="btn-explain-simple" tabindex="0">
+            <span class="btn-icon">🎓</span>
+            Explicar para iniciantes
+          </button>
+        </div>
+        <div class="result-area" id="result-summary">
+          <div class="placeholder">
+            <span class="placeholder-icon">📝</span>
+            <p>Clique em "Gerar resumo" para analisar a página atual.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Translation Panel ═══ -->
+      <div class="panel" id="panel-translation" role="tabpanel" aria-labelledby="tab-translation">
+        <div class="panel-controls">
+          <div class="select-row">
+            <label for="language-select" class="select-label">Traduzir para:</label>
+            <select id="language-select" class="select-input" tabindex="0">
+              <option value="pt-BR">Português (Brasil)</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="it">Italiano</option>
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="zh">中文</option>
+              <option value="ru">Русский</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
+          <button class="btn btn-action" id="btn-translate" tabindex="0">
+            <span class="btn-icon">🌐</span>
+            Traduzir página
+          </button>
+        </div>
+        <div class="result-area" id="result-translation">
+          <div class="placeholder">
+            <span class="placeholder-icon">🌐</span>
+            <p>Selecione o idioma e clique em "Traduzir página".</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Tips Panel ═══ -->
+      <div class="panel" id="panel-tips" role="tabpanel" aria-labelledby="tab-tips">
+        <div class="panel-controls">
+          <button class="btn btn-action" id="btn-generate-tips" tabindex="0">
+            <span class="btn-icon">💡</span>
+            Gerar dicas
+          </button>
+        </div>
+        <div class="result-area" id="result-tips">
+          <div class="placeholder">
+            <span class="placeholder-icon">💡</span>
+            <p>Clique para gerar dicas de usabilidade, segurança e leitura.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Entities Panel ═══ -->
+      <div class="panel" id="panel-entities" role="tabpanel" aria-labelledby="tab-entities">
+        <div class="panel-controls">
+          <button class="btn btn-action" id="btn-extract-entities" tabindex="0">
+            <span class="btn-icon">🏷️</span>
+            Extrair entidades
+          </button>
+        </div>
+        <div class="result-area" id="result-entities">
+          <div class="placeholder">
+            <span class="placeholder-icon">🏷️</span>
+            <p>Clique para extrair títulos, autores, datas e links importantes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Snippet Panel ═══ -->
+      <div class="panel" id="panel-snippet" role="tabpanel" aria-labelledby="tab-snippet">
+        <div class="panel-controls">
+          <div class="snippet-preview" id="snippet-preview">
+            <p class="snippet-label">Texto selecionado:</p>
+            <p class="snippet-text" id="snippet-text">Selecione um trecho de texto na página para analisar.</p>
+          </div>
+          <div class="snippet-actions">
+            <button class="btn btn-action btn-small" id="btn-snippet-summary" tabindex="0" disabled>
+              📝 Resumir
+            </button>
+            <button class="btn btn-action btn-small" id="btn-snippet-explain" tabindex="0" disabled>
+              🎓 Explicar
+            </button>
+            <button class="btn btn-action btn-small" id="btn-snippet-translate" tabindex="0" disabled>
+              🌐 Traduzir
+            </button>
+          </div>
+        </div>
+        <div class="result-area" id="result-snippet">
+          <div class="placeholder">
+            <span class="placeholder-icon">✂️</span>
+            <p>Selecione um trecho na página e escolha uma ação acima.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Chat Panel ═══ -->
+      <div class="panel" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat">
+        <div class="chat-container">
+          <div class="chat-header-controls">
+            <div class="chat-controls-left">
+              <label class="chat-toggle-label" for="chat-context-toggle">
+                <input type="checkbox" id="chat-context-toggle" checked tabindex="0">
+                <span class="chat-toggle-text">Contexto da página</span>
+              </label>
+              <span class="chat-controls-separator">|</span>
+              <select id="chat-timeout-select" class="chat-timeout-select" tabindex="0">
+                <option value="60">Espera: 60s</option>
+                <option value="120" selected>Espera: 120s</option>
+                <option value="300">Espera: 300s</option>
+                <option value="3600">Espera: Sem Limite</option>
+              </select>
+            </div>
+            <button class="btn-clear-chat" id="btn-clear-chat" title="Limpar conversa" tabindex="0">
+              🧹 Limpar
+            </button>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-message assistant">
+              <div class="chat-avatar">🧠</div>
+              <div class="chat-bubble assistant">
+                Olá! Eu sou o TorAI, seu assistente local e privado. Como posso te ajudar hoje?
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <div class="chat-input-wrapper">
+              <textarea id="chat-input" class="chat-input" placeholder="Digite sua pergunta..." rows="1" tabindex="0"></textarea>
+              <button class="chat-send-btn" id="btn-send-chat" title="Enviar pergunta" tabindex="0" disabled>
+                <span class="send-icon">▲</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Processing Indicator -->
+    <div class="processing-bar hidden" id="processing-bar">
+      <div class="processing-spinner"></div>
+      <span class="processing-text" id="processing-text">Processando...</span>
+      <button class="processing-cancel" id="btn-cancel" title="Cancelar" tabindex="0">✕</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="sidebar-footer">
+      <div class="footer-meta" id="footer-meta">
+        <span id="footer-model">—</span>
+        <span id="footer-latency">—</span>
+      </div>
+      <p class="footer-disclaimer">
+        ⚠️ IA pode gerar erros. Verifique informações importantes.
+        Respeite direitos autorais.
+      </p>
+    </footer>
+  </div>
+
+  <script src="sidebar.js"></script>
+</body>
+</html>

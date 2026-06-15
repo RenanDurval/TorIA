@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=380">
+  <title>TorAI — IA Local Privada</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="header-left">
+        <div class="logo-icon">🧠</div>
+        <div class="header-text">
+          <h1 class="header-title">TorAI</h1>
+          <p class="header-subtitle">IA Local Privada</p>
+        </div>
+      </div>
+      <div class="status-indicator" id="status-indicator" title="Desconectado">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-text" id="status-text">Offline</span>
+      </div>
+    </header>
+
+    <!-- Privacy Badge -->
+    <div class="privacy-badge">
+      <span class="privacy-icon">🔒</span>
+      <span class="privacy-text">Todos os dados ficam no seu computador</span>
+    </div>
+
+    <!-- Connection Section -->
+    <section class="section" id="section-connection">
+      <h2 class="section-title">Provedor de IA</h2>
+      
+      <div class="provider-toggle" role="radiogroup" aria-label="Selecionar provedor">
+        <button class="provider-btn active" id="btn-ollama" data-provider="ollama" 
+                role="radio" aria-checked="true" tabindex="0">
+          <span class="provider-name">Ollama</span>
+          <span class="provider-port">:11434</span>
+        </button>
+        <button class="provider-btn" id="btn-lmstudio" data-provider="lmstudio"
+                role="radio" aria-checked="false" tabindex="-1">
+          <span class="provider-name">LM Studio</span>
+          <span class="provider-port">:1234</span>
+        </button>
+      </div>
+
+      <div class="url-input-group" id="url-group" style="display: none;">
+        <label for="custom-url" class="input-label">URL personalizada</label>
+        <input type="text" id="custom-url" class="text-input" 
+               placeholder="http://127.0.0.1:11434" 
+               aria-describedby="url-hint">
+        <span class="input-hint" id="url-hint">Apenas localhost é permitido</span>
+      </div>
+
+      <button class="btn btn-primary" id="btn-connect" tabindex="0">
+        <span class="btn-icon">⚡</span>
+        <span class="btn-text" id="btn-connect-text">Conectar</span>
+      </button>
+      <div id="connection-error" class="error-message hidden"></div>
+    </section>
+
+    <!-- Model Section (shown when connected) -->
+    <section class="section hidden" id="section-model">
+      <h2 class="section-title">Modelo</h2>
+      
+      <div class="select-group">
+        <label for="model-select" class="input-label">Modelo ativo</label>
+        <select id="model-select" class="select-input" tabindex="0">
+          <option value="">Carregando modelos...</option>
+        </select>
+      </div>
+
+      <!-- Parameters -->
+      <div class="param-group">
+        <div class="param-row">
+          <label for="temperature-slider" class="param-label">
+            Temperatura
+            <span class="param-value" id="temperature-value">0.7</span>
+          </label>
+          <input type="range" id="temperature-slider" class="range-input"
+                 min="0" max="2" step="0.1" value="0.7" tabindex="0">
+          <span class="param-hint">Baixo = preciso · Alto = criativo</span>
+        </div>
+
+        <div class="param-row">
+          <label for="tokens-slider" class="param-label">
+            Tokens máx.
+            <span class="param-value" id="tokens-value">2048</span>
+          </label>
+          <input type="range" id="tokens-slider" class="range-input"
+                 min="128" max="8192" step="128" value="2048" tabindex="0">
+          <span class="param-hint">Limite de tamanho da resposta</span>
+        </div>
+
+        <div class="param-row">
+          <label for="timeout-slider" class="param-label">
+            Timeout
+            <span class="param-value" id="timeout-value">120s</span>
+          </label>
+          <input type="range" id="timeout-slider" class="range-input"
+                 min="30" max="600" step="30" value="120" tabindex="0">
+          <span class="param-hint">Tempo limite para o modelo responder</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions (shown when connected) -->
+    <section class="section hidden" id="section-actions">
+      <h2 class="section-title">Ações rápidas</h2>
+      
+      <div class="action-grid">
+        <button class="action-btn" id="btn-summary" tabindex="0">
+          <span class="action-icon">📝</span>
+          <span class="action-label">Resumir</span>
+        </button>
+        <button class="action-btn" id="btn-translate" tabindex="0">
+          <span class="action-icon">🌐</span>
+          <span class="action-label">Traduzir</span>
+        </button>
+        <button class="action-btn" id="btn-tips" tabindex="0">
+          <span class="action-icon">💡</span>
+          <span class="action-label">Dicas</span>
+        </button>
+        <button class="action-btn" id="btn-chat" tabindex="0">
+          <span class="action-icon">💬</span>
+          <span class="action-label">Chat</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Install Instructions (shown when not connected) -->
+    <section class="section hidden" id="section-install">
+      <h2 class="section-title">Como instalar</h2>
+      
+      <div class="install-tabs" role="tablist">
+        <button class="install-tab active" id="tab-install-ollama" 
+                role="tab" aria-selected="true" tabindex="0">Ollama</button>
+        <button class="install-tab" id="tab-install-lmstudio"
+                role="tab" aria-selected="false" tabindex="-1">LM Studio</button>
+      </div>
+
+      <div class="install-content" id="install-ollama" role="tabpanel">
+        <ol class="install-steps">
+          <li>Acesse <strong>ollama.com</strong> e baixe o Ollama</li>
+          <li>Instale e execute: <code>ollama serve</code></li>
+          <li>Baixe um modelo: <code>ollama pull llama3.2</code></li>
+          <li>Clique em <strong>"Conectar"</strong> acima</li>
+        </ol>
+      </div>
+
+      <div class="install-content hidden" id="install-lmstudio" role="tabpanel">
+        <ol class="install-steps">
+          <li>Acesse <strong>lmstudio.ai</strong> e baixe o LM Studio</li>
+          <li>Abra e baixe um modelo na aba "Discover"</li>
+          <li>Vá em <strong>"Server"</strong> e clique "Start Server"</li>
+          <li>Clique em <strong>"Conectar"</strong> acima</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Latency & Status Bar -->
+    <div class="status-bar" id="status-bar">
+      <span class="status-bar-item" id="latency-display" title="Latência">
+        <span class="status-bar-icon">⏱️</span>
+        <span id="latency-value">—</span>
+      </span>
+      <span class="status-bar-item" id="model-display" title="Modelo ativo">
+        <span class="status-bar-icon">🤖</span>
+        <span id="active-model-name">Nenhum</span>
+      </span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <span class="footer-version">v1.0.0</span>
+      <span class="footer-disclaimer">⚠️ IA pode gerar erros. Verifique informações importantes.</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
