@@ -212,6 +212,14 @@ Para mais detalhes, consulte [PRIVACY.md](PRIVACY.md).
 
 ---
 
+## Contribuindo
+
+Quer ajudar a melhorar o TorAI? Este projeto é de código aberto e todas as contribuições são bem-vindas! Sinta-se à vontade para enviar *Pull Requests* ou abrir *Issues* relatando bugs e sugestões.
+
+Antes de começar, por favor, leia o nosso [Guia de Contribuição](CONTRIBUTING.md) e o rigoroso [Protocolo de Segurança](documentacao/protocolo-seguranca.md) para saber como preparar o seu ambiente e submeter suas alterações com segurança e sem vazamento de dados locais.
+
+---
+
 ## Desenvolvimento
 
 ### Pré-requisitos

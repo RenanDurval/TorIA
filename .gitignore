@@ -30,3 +30,11 @@ yarn-error.log*
 .env.development
 .env.test
 .env.production
+
+# Configs and Secrets
+config.json
+config.*.json
+secrets.*
+*.key
+*.pem
+*.cert
