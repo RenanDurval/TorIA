@@ -206,7 +206,7 @@ async function processAIRequest(request: AIRequest): Promise<AIResponse> {
     // Construir prompt
     const messages = buildPrompt(request.type, sanitizedContent, {
       targetLanguage: request.targetLanguage || currentSettings.targetLanguage,
-      pageText: (request as any).pageText,
+      pageText: request.pageText,
     });
 
     // Validar parâmetros do modelo

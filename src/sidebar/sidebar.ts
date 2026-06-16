@@ -11,57 +11,39 @@ import type { AIResponse, ProviderInfo, TaskType } from '../shared/types';
 
 const $ = (id: string) => document.getElementById(id)!;
 
-// Status
-const statusDot = $('sidebar-status-dot');
-const statusLabel = $('sidebar-status-label');
-
-// Tabs
-const tabButtons = document.querySelectorAll('.tab-btn') as NodeListOf<HTMLButtonElement>;
-const panels = document.querySelectorAll('.panel') as NodeListOf<HTMLElement>;
-
-// Summary
-const btnSummaryShort = $('btn-summary-short') as HTMLButtonElement;
-const btnSummaryDetailed = $('btn-summary-detailed') as HTMLButtonElement;
-const btnGenerateSummary = $('btn-generate-summary') as HTMLButtonElement;
-const btnExplainSimple = $('btn-explain-simple') as HTMLButtonElement;
-const resultSummary = $('result-summary');
-
-// Translation
-const languageSelect = $('language-select') as HTMLSelectElement;
-const btnTranslate = $('btn-translate') as HTMLButtonElement;
-const resultTranslation = $('result-translation');
-
-// Tips
-const btnGenerateTips = $('btn-generate-tips') as HTMLButtonElement;
-const resultTips = $('result-tips');
-
-// Entities
-const btnExtractEntities = $('btn-extract-entities') as HTMLButtonElement;
-const resultEntities = $('result-entities');
-
-// Snippet
-const snippetText = $('snippet-text');
-const btnSnippetSummary = $('btn-snippet-summary') as HTMLButtonElement;
-const btnSnippetExplain = $('btn-snippet-explain') as HTMLButtonElement;
-const btnSnippetTranslate = $('btn-snippet-translate') as HTMLButtonElement;
-const resultSnippet = $('result-snippet');
-
-// Chat
-const chatMessages = $('chat-messages');
-const chatInput = $('chat-input') as HTMLTextAreaElement;
-const btnSendChat = $('btn-send-chat') as HTMLButtonElement;
-const chatContextToggle = $('chat-context-toggle') as HTMLInputElement;
-const chatTimeoutSelect = $('chat-timeout-select') as HTMLSelectElement;
-const btnClearChat = $('btn-clear-chat') as HTMLButtonElement;
-
-// Processing
-const processingBar = $('processing-bar');
-const processingText = $('processing-text');
-const btnCancel = $('btn-cancel') as HTMLButtonElement;
-
-// Footer
-const footerModel = $('footer-model');
-const footerLatency = $('footer-latency');
+// Declarações — inicializadas no DOMContentLoaded
+let statusDot: HTMLElement;
+let statusLabel: HTMLElement;
+let tabButtons: NodeListOf<HTMLButtonElement>;
+let panels: NodeListOf<HTMLElement>;
+let btnSummaryShort: HTMLButtonElement;
+let btnSummaryDetailed: HTMLButtonElement;
+let btnGenerateSummary: HTMLButtonElement;
+let btnExplainSimple: HTMLButtonElement;
+let resultSummary: HTMLElement;
+let languageSelect: HTMLSelectElement;
+let btnTranslate: HTMLButtonElement;
+let resultTranslation: HTMLElement;
+let btnGenerateTips: HTMLButtonElement;
+let resultTips: HTMLElement;
+let btnExtractEntities: HTMLButtonElement;
+let resultEntities: HTMLElement;
+let snippetText: HTMLElement;
+let btnSnippetSummary: HTMLButtonElement;
+let btnSnippetExplain: HTMLButtonElement;
+let btnSnippetTranslate: HTMLButtonElement;
+let resultSnippet: HTMLElement;
+let chatMessages: HTMLElement;
+let chatInput: HTMLTextAreaElement;
+let btnSendChat: HTMLButtonElement;
+let chatContextToggle: HTMLInputElement;
+let chatTimeoutSelect: HTMLSelectElement;
+let btnClearChat: HTMLButtonElement;
+let processingBar: HTMLElement;
+let processingText: HTMLElement;
+let btnCancel: HTMLButtonElement;
+let footerModel: HTMLElement;
+let footerLatency: HTMLElement;
 
 // ─── Estado ──────────────────────────────────────────────────────
 
@@ -73,6 +55,8 @@ let cachedPageText: string | null = null;
 // ─── Inicialização ───────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Inicializar referências DOM
+  initDomReferences();
   registerEventListeners();
   await refreshStatus();
 
@@ -495,8 +479,45 @@ function getTaskLabel(taskType: TaskType): string {
     snippet_summary: 'resumo do trecho',
     snippet_explain: 'explicação do trecho',
     snippet_translate: 'tradução do trecho',
+    chat: 'chat',
   };
   return labels[taskType] || taskType;
+}
+
+/** Inicializa todas as referências DOM — chamado no DOMContentLoaded */
+function initDomReferences(): void {
+  statusDot = $('sidebar-status-dot');
+  statusLabel = $('sidebar-status-label');
+  tabButtons = document.querySelectorAll('.tab-btn') as NodeListOf<HTMLButtonElement>;
+  panels = document.querySelectorAll('.panel') as NodeListOf<HTMLElement>;
+  btnSummaryShort = $('btn-summary-short') as HTMLButtonElement;
+  btnSummaryDetailed = $('btn-summary-detailed') as HTMLButtonElement;
+  btnGenerateSummary = $('btn-generate-summary') as HTMLButtonElement;
+  btnExplainSimple = $('btn-explain-simple') as HTMLButtonElement;
+  resultSummary = $('result-summary');
+  languageSelect = $('language-select') as HTMLSelectElement;
+  btnTranslate = $('btn-translate') as HTMLButtonElement;
+  resultTranslation = $('result-translation');
+  btnGenerateTips = $('btn-generate-tips') as HTMLButtonElement;
+  resultTips = $('result-tips');
+  btnExtractEntities = $('btn-extract-entities') as HTMLButtonElement;
+  resultEntities = $('result-entities');
+  snippetText = $('snippet-text');
+  btnSnippetSummary = $('btn-snippet-summary') as HTMLButtonElement;
+  btnSnippetExplain = $('btn-snippet-explain') as HTMLButtonElement;
+  btnSnippetTranslate = $('btn-snippet-translate') as HTMLButtonElement;
+  resultSnippet = $('result-snippet');
+  chatMessages = $('chat-messages');
+  chatInput = $('chat-input') as HTMLTextAreaElement;
+  btnSendChat = $('btn-send-chat') as HTMLButtonElement;
+  chatContextToggle = $('chat-context-toggle') as HTMLInputElement;
+  chatTimeoutSelect = $('chat-timeout-select') as HTMLSelectElement;
+  btnClearChat = $('btn-clear-chat') as HTMLButtonElement;
+  processingBar = $('processing-bar');
+  processingText = $('processing-text');
+  btnCancel = $('btn-cancel') as HTMLButtonElement;
+  footerModel = $('footer-model');
+  footerLatency = $('footer-latency');
 }
 
 async function copyToClipboard(btn: HTMLButtonElement, text: string): Promise<void> {

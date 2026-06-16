@@ -1,96 +1,217 @@
-# 💻 Guia do Desenvolvedor — TorAI
+# TorAI — Guia do Desenvolvedor
 
-Este documento serve como guia técnico para desenvolvedores que desejam compilar, estender, depurar ou rodar a suíte de testes da extensão **TorAI**.
-
----
-
-## 1. Estrutura de Diretórios do Código-Fonte
-
-O projeto adota uma separação rígida de responsabilidades:
-
-```
-tor-ai-extension/
-├── documentacao/           # Relatórios, manuais e arquitetura do projeto
-├── scripts/                # Scripts de compilação e empacotamento
-│   ├── build.js            # Build script utilizando esbuild
-│   └── package.js          # Utilitário para empacotamento em formato .xpi
-├── src/                    # Código-fonte principal da extensão
-│   ├── background/         # Scripts de ciclo de vida (AI Client, segurança, prompts)
-│   ├── content/            # Script injetado para ler o DOM das páginas visitadas
-│   ├── popup/              # Interface do painel superior de configurações
-│   ├── sidebar/            # Interface principal em abas do painel lateral
-│   ├── shared/             # Tipos, constantes, mensagens e internacionalização
-│   └── manifest.json       # Manifesto WebExtension Manifest V2
-├── tests/                  # Suíte de testes automatizados com Jest
-│   ├── setup.ts            # Mocks globais para APIs do Firefox/Tor
-│   ├── unit/               # Testes unitários (segurança, client de IA, DOM)
-│   └── integration/        # Testes de integração de fluxo de mensagens
-├── package.json            # Manifesto do Node.js (dependências e scripts de automação)
-└── tsconfig.json           # Configuração de compilação do compilador TypeScript
-```
+**Versão:** 1.0.0  
+**Última Atualização:** 2025-06-16
 
 ---
 
-## 2. Sistema de Compilação (`scripts/build.js`)
+## Pré-requisitos
 
-A compilação converte os arquivos TypeScript (`.ts`) localizados na pasta `src/` em arquivos JavaScript (`.js`) otimizados em formato IIFE (Immediately Invoked Function Expression) que o navegador consegue carregar.
+- **Node.js** 18+ (recomendado: 20 LTS)
+- **npm** 9+
+- **Tor Browser** ou Firefox 102+ para testes
+- **Ollama** ou **LMStudio** instalado localmente
 
-O script [build.js](file:///c:/Users/renan/Desktop/Extencao%20Tor/tor-ai-extension/scripts/build.js) executa as seguintes tarefas:
-1. **Limpeza**: Apaga a pasta `dist/` anterior usando o utilitário `rimraf`.
-2. **Resolução de Bundles**: Configura quatro pontos de entrada independentes do `esbuild`:
-   - `background.ts` ➔ `dist/background.js`
-   - `content-script.ts` ➔ `dist/content-script.js`
-   - `popup.ts` ➔ `dist/popup.js`
-   - `sidebar.ts` ➔ `dist/sidebar.js`
-3. **Cópia de Recursos**: Copia os arquivos `.html` e `.css` das pastas `popup` e `sidebar`, além do `manifest.json`, diretamente para os caminhos correspondentes em `dist/`.
-4. **Placeholder de Ícones**: Se a pasta `dist/icons/` não contiver os arquivos PNG, o script gera automaticamente ícones SVG temporários baseados em um logo minimalista para garantir que a extensão inicialize sem quebras visuais.
+---
 
-### Comandos de Compilação:
-Execute estes comandos na raiz do projeto:
+## Setup Inicial
 
 ```bash
-# Executa uma compilação única de produção
+# 1. Clonar o projeto
+cd "Extencao Tor/tor-ai-extension"
+
+# 2. Instalar dependências
+npm install
+
+# 3. Compilar o projeto
 npm run build
 
-# Executa em modo watch (recompila instantaneamente ao alterar qualquer arquivo)
+# 4. (Opcional) Build com watch mode para desenvolvimento
 npm run build:watch
 ```
 
 ---
 
-## 3. Empacotamento de Lançamento (`scripts/package.js`)
+## Comandos Disponíveis
 
-Para distribuir a extensão como um arquivo instalável permanentemente no navegador Tor, ela deve ser empacotada em formato `.xpi` (que é estruturalmente um arquivo `.zip` com a extensão modificada).
-
-O script [package.js](file:///c:/Users/renan/Desktop/Extencao%20Tor/tor-ai-extension/scripts/package.js) realiza o empacotamento:
-1. Cria a pasta `releases/` se ela não existir.
-2. Utiliza ferramentas nativas do Windows PowerShell (`Compress-Archive`) ou utilitários Zip para compactar todo o conteúdo da pasta `dist/` gerando o arquivo `releases/tor-ai-extension.xpi`.
-
-### Comando de Empacotamento:
-```bash
-npm run package
-```
+| Comando | Descrição |
+|---|---|
+| `npm run build` | Compila TypeScript e copia assets para `dist/` |
+| `npm run build:watch` | Build com auto-reload ao salvar |
+| `npm test` | Executa testes unitários e de integração |
+| `npm run test:coverage` | Testes com relatório de cobertura |
+| `npm run package` | Gera arquivo `.xpi` para distribuição |
 
 ---
 
-## 4. Testes Automatizados
+## Como Testar no Tor Browser
 
-O framework de testes adotado é o **Jest** configurado com suporte para TypeScript via `ts-jest` e simulação de árvore de elementos DOM com `jsdom`.
+### Carregar a extensão em modo de desenvolvimento:
 
-### Arquivo de Configuração de Mocks (`tests/setup.ts`)
-Como o código da extensão utiliza a API global `browser.*` (nativa do Firefox/Tor Browser), o arquivo [setup.ts](file:///c:/Users/renan/Desktop/Extencao%20Tor/tor-ai-extension/tests/setup.ts) simula todo o comportamento destas APIs (envio de mensagens, armazenamento em storage, consultas a abas) para que os testes rodem em ambiente de terminal puro Node.js sem disparar erros.
+1. Execute `npm run build` para gerar a pasta `dist/`
+2. Abra o Tor Browser
+3. Navegue para `about:debugging#/runtime/this-firefox`
+4. Clique em **"Carregar extensão temporária..."**
+5. Selecione o arquivo `dist/manifest.json`
 
-### Servidor de Mock de IA (`tests/integration/mock-server.ts`)
-Para rodar os testes de integração sem depender de uma instância física instalada do Ollama ou LM Studio, criamos um servidor HTTP fictício em [mock-server.ts](file:///c:/Users/renan/Desktop/Extencao%20Tor/tor-ai-extension/tests/integration/mock-server.ts). Ele intercepta as chamadas locais de fetch e responde imediatamente com textos estruturados simulando resumos, traduções e análises de entidades.
+### Verificar que está funcionando:
 
-### Comandos de Testes:
-```bash
-# Executa todos os testes da aplicação
-npm test
+1. O ícone 🧠 aparecerá na toolbar
+2. Clique no ícone para abrir o popup
+3. Certifique-se que Ollama ou LMStudio esteja rodando
+4. Clique "Conectar"
+5. Use `Ctrl+Shift+A` para abrir o sidebar
 
-# Executa testes em modo de observação contínua (watch)
-npm run test:watch
+---
 
-# Gera relatório de cobertura de linhas do código analisado
-npm run test:coverage
+## Estrutura dos Módulos
+
+### background.ts — Orquestrador
+
+Responsável por:
+- Gerenciar o ciclo de vida da conexão com o provedor de IA
+- Interceptar e modificar headers HTTP (CORS bypass)
+- Rotear mensagens entre componentes
+- Processar requisições de IA (chamar prompt-builder + ai-client)
+
+**Funções principais:**
+- `handleMessage()` — dispatcher principal de mensagens
+- `processAIRequest()` — pipeline completo: sanitizar → prompt → fetch → validar
+- `forwardToContentScript()` — encaminha mensagens ao content script
+
+### ai-client.ts — Cliente HTTP
+
+Responsável por:
+- Manter estado da conexão (conectado/desconectado/erro)
+- Auto-detecção de provedores (`autoDetect()`)
+- Listar modelos disponíveis
+- Enviar requisições ao endpoint `/v1/chat/completions`
+- Retry com backoff exponencial
+- Controle de timeout e abort
+
+**Funções principais:**
+- `connect()` — conecta ao provedor e lista modelos
+- `sendChatCompletion()` — envia requisição com retry
+- `fetchWithRetry()` — fetch com 3 tentativas e backoff
+- `cancelRequest()` — aborta requisição em andamento
+
+### prompt-builder.ts — Construtor de Prompts
+
+Converte o tipo de tarefa em um array de mensagens `{role, content}` compatível com a API OpenAI.
+
+**Tipos de tarefa suportados:**
+
+| TaskType | Prompt |
+|---|---|
+| `summary_short` | Resumo em 3-4 frases |
+| `summary_detailed` | Resumo estruturado com pontos-chave |
+| `translate` | Tradução para idioma alvo |
+| `tips` | Dicas de segurança e usabilidade |
+| `entities` | Extração de entidades nomeadas |
+| `explain` | Explicação simplificada |
+| `snippet_summary` | Resumo de trecho selecionado |
+| `snippet_explain` | Explicação de trecho selecionado |
+| `snippet_translate` | Tradução de trecho selecionado |
+| `chat` | Chat livre com contexto opcional |
+
+### security.ts — Módulo de Segurança
+
+Funções de validação e sanitização:
+
+- `validateUrl()` — verifica host, protocolo e porta
+- `buildSafeUrl()` — concatena base URL + path com validação
+- `sanitizeText()` — limpa texto de caracteres perigosos
+- `sanitizeSnippet()` — versão para trechos (limite menor)
+- `sanitizeModelParams()` — limita temperature e maxTokens
+- `validateModelName()` — regex para nomes de modelo
+- `validateAIResponse()` — detecta padrões suspeitos na resposta
+
+---
+
+## Fluxo de Build
+
+O build utiliza **esbuild** para compilação rápida de TypeScript:
+
 ```
+src/*.ts  →  esbuild (bundle + minify)  →  dist/*.js
+src/*.html  →  copy  →  dist/*.html
+src/*.css   →  copy  →  dist/*.css
+src/icons/  →  copy  →  dist/icons/
+```
+
+Configurações do esbuild:
+- **Format:** IIFE (compatível com contexto de extensão)
+- **Target:** Firefox 102 (ES2019+)
+- **Bundle:** true (resolve imports)
+- **Minify:** true em produção, false em watch
+
+---
+
+## Testes
+
+### Executar todos os testes:
+
+```bash
+npm test
+```
+
+### Estrutura de testes:
+
+```
+tests/
+├── setup.ts                    # Mocks globais (browser.*, fetch, AbortController)
+├── unit/
+│   ├── ai-client.test.ts       # Testes do cliente HTTP
+│   ├── content-script.test.ts  # Testes de extração DOM
+│   ├── prompt-builder.test.ts  # Testes de construção de prompts
+│   └── security.test.ts        # Testes de validação e sanitização
+└── integration/
+    ├── background-flow.test.ts # Testes do fluxo completo
+    └── mock-server.ts          # Servidor mock para testes
+```
+
+### Mocks disponíveis (setup.ts):
+
+- `browser.runtime.sendMessage` — mensagens entre componentes
+- `browser.tabs.query` — consulta de abas
+- `browser.storage.local.*` — armazenamento local
+- `browser.sidebarAction.*` — controle do sidebar
+- `fetch` — requisições HTTP
+- `AbortController` — controle de cancelamento
+
+---
+
+## Dicas de Desenvolvimento
+
+### 1. Provedores de IA Locais
+
+**Ollama** (padrão, porta 11434):
+```bash
+# Instalar
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Baixar modelo
+ollama pull llama3.2
+
+# Iniciar servidor (automático na instalação)
+ollama serve
+```
+
+**LMStudio** (porta 1234):
+1. Baixe em https://lmstudio.ai
+2. Abra e baixe um modelo (ex: Llama 3.2)
+3. Inicie o servidor local (aba "Local Server")
+
+### 2. Debug da Extensão
+
+- Use `about:debugging` para ver logs do background script
+- Use DevTools do popup/sidebar para debug da interface
+- Filtro útil no console: `[TorAI]`
+
+### 3. Convenções de Código
+
+- Prefixo de log: `[TorAI Background]`, `[TorAI Popup]`, `[TorAI Sidebar]`
+- Mensagens em português brasileiro para UI
+- Comentários de código em português
+- TypeScript strict mode ativado
+- Sem dependências externas em runtime (zero dependencies na extensão final)

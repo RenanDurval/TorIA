@@ -14,8 +14,6 @@ import type {
   ProviderInfo,
   ChatCompletionRequest,
   ChatCompletionResponse,
-  ModelInfo,
-  UserSettings,
 } from '../shared/types';
 
 import {

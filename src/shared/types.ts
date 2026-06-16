@@ -98,6 +98,7 @@ export interface AIRequest {
   type: TaskType;
   content: string;
   targetLanguage?: string;
+  pageText?: string;
   options?: Partial<UserSettings>;
 }
 

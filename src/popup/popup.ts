@@ -11,37 +11,34 @@ import type { ProviderInfo, UserSettings, Provider } from '../shared/types';
 
 const $ = (id: string) => document.getElementById(id)!;
 
-const statusDot = $('status-dot') as HTMLElement;
-const statusText = $('status-text') as HTMLElement;
+const $ = (id: string) => document.getElementById(id)!;
 
-const btnOllama = $('btn-ollama') as HTMLButtonElement;
-const btnLmstudio = $('btn-lmstudio') as HTMLButtonElement;
-const urlGroup = $('url-group') as HTMLElement;
-const customUrl = $('custom-url') as HTMLInputElement;
-
-const btnConnect = $('btn-connect') as HTMLButtonElement;
-const btnConnectText = $('btn-connect-text') as HTMLElement;
-const connectionError = $('connection-error') as HTMLElement;
-
-const sectionModel = $('section-model') as HTMLElement;
-const sectionActions = $('section-actions') as HTMLElement;
-const sectionInstall = $('section-install') as HTMLElement;
-const modelSelect = $('model-select') as HTMLSelectElement;
-
-const temperatureSlider = $('temperature-slider') as HTMLInputElement;
-const temperatureValue = $('temperature-value') as HTMLElement;
-const tokensSlider = $('tokens-slider') as HTMLInputElement;
-const tokensValue = $('tokens-value') as HTMLElement;
-const timeoutSlider = $('timeout-slider') as HTMLInputElement;
-const timeoutValue = $('timeout-value') as HTMLElement;
-
-const latencyValue = $('latency-value') as HTMLElement;
-const activeModelName = $('active-model-name') as HTMLElement;
-
-const tabInstallOllama = $('tab-install-ollama') as HTMLButtonElement;
-const tabInstallLmstudio = $('tab-install-lmstudio') as HTMLButtonElement;
-const installOllama = $('install-ollama') as HTMLElement;
-const installLmstudio = $('install-lmstudio') as HTMLElement;
+// Elementos DOM — inicializados no DOMContentLoaded
+let statusDot: HTMLElement;
+let statusText: HTMLElement;
+let btnOllama: HTMLButtonElement;
+let btnLmstudio: HTMLButtonElement;
+let urlGroup: HTMLElement;
+let customUrl: HTMLInputElement;
+let btnConnect: HTMLButtonElement;
+let btnConnectText: HTMLElement;
+let connectionError: HTMLElement;
+let sectionModel: HTMLElement;
+let sectionActions: HTMLElement;
+let sectionInstall: HTMLElement;
+let modelSelect: HTMLSelectElement;
+let temperatureSlider: HTMLInputElement;
+let temperatureValue: HTMLElement;
+let tokensSlider: HTMLInputElement;
+let tokensValue: HTMLElement;
+let timeoutSlider: HTMLInputElement;
+let timeoutValue: HTMLElement;
+let latencyValue: HTMLElement;
+let activeModelName: HTMLElement;
+let tabInstallOllama: HTMLButtonElement;
+let tabInstallLmstudio: HTMLButtonElement;
+let installOllama: HTMLElement;
+let installLmstudio: HTMLElement;
 
 // ─── Estado Local ────────────────────────────────────────────────
 
@@ -52,6 +49,9 @@ let currentSettings: UserSettings | null = null;
 // ─── Inicialização ───────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Inicializar referências DOM
+  initDomReferences();
+
   // Carregar configurações e status
   await loadInitialState();
 
@@ -418,4 +418,33 @@ function switchInstallTab(tab: 'ollama' | 'lmstudio'): void {
 
   installOllama.classList.toggle('hidden', tab !== 'ollama');
   installLmstudio.classList.toggle('hidden', tab !== 'lmstudio');
+}
+
+/** Inicializa todas as referências DOM — chamado no DOMContentLoaded */
+function initDomReferences(): void {
+  statusDot = $('status-dot') as HTMLElement;
+  statusText = $('status-text') as HTMLElement;
+  btnOllama = $('btn-ollama') as HTMLButtonElement;
+  btnLmstudio = $('btn-lmstudio') as HTMLButtonElement;
+  urlGroup = $('url-group') as HTMLElement;
+  customUrl = $('custom-url') as HTMLInputElement;
+  btnConnect = $('btn-connect') as HTMLButtonElement;
+  btnConnectText = $('btn-connect-text') as HTMLElement;
+  connectionError = $('connection-error') as HTMLElement;
+  sectionModel = $('section-model') as HTMLElement;
+  sectionActions = $('section-actions') as HTMLElement;
+  sectionInstall = $('section-install') as HTMLElement;
+  modelSelect = $('model-select') as HTMLSelectElement;
+  temperatureSlider = $('temperature-slider') as HTMLInputElement;
+  temperatureValue = $('temperature-value') as HTMLElement;
+  tokensSlider = $('tokens-slider') as HTMLInputElement;
+  tokensValue = $('tokens-value') as HTMLElement;
+  timeoutSlider = $('timeout-slider') as HTMLInputElement;
+  timeoutValue = $('timeout-value') as HTMLElement;
+  latencyValue = $('latency-value') as HTMLElement;
+  activeModelName = $('active-model-name') as HTMLElement;
+  tabInstallOllama = $('tab-install-ollama') as HTMLButtonElement;
+  tabInstallLmstudio = $('tab-install-lmstudio') as HTMLButtonElement;
+  installOllama = $('install-ollama') as HTMLElement;
+  installLmstudio = $('install-lmstudio') as HTMLElement;
 }
