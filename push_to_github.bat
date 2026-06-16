@@ -45,7 +45,7 @@ echo (Caso seja a primeira vez, uma janela de login do GitHub pode abrir)
 echo.
 git push -u origin main
 
-if %errorlevel% eq 0 (
+if %errorlevel% EQU 0 (
     echo.
     echo ===================================================
     echo   🎉 SUcesso! Seu projeto foi atualizado no GitHub!
